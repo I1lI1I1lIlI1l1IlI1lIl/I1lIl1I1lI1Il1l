@@ -1,2 +1,2 @@
-task.wait(10)
+task.wait(5)
 print("nigger black verrrry cjcocloetey")
