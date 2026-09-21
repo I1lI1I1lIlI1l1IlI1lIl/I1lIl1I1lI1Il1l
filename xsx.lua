@@ -1858,7 +1858,7 @@ function library:Init(key)
     
                 local ChatTextBox = nil
                 pcall(function()
-                    ChatTextBox = Player.PlayerGui:WaitForChild("Chat", 3).Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar
+                    ChatTextBox = Player.PlayerGui:WaitForChild("Chat", 0.1).Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar
                 end)
                 if UserInputService.WindowFocused then
                     UserInputService.InputBegan:Connect(function(c, p)
