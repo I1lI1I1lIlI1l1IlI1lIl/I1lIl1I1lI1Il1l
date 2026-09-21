@@ -1813,7 +1813,7 @@ function library:Init(key)
                     Return = "enter"
                 }
     
-                keybindButtonLabel.Text = Shortcuts[default_t.Name] or default_t.Name
+                keybindButtonLabel.Text = default_t == Enum.KeyCode.Unknown and "None" or (Shortcuts[default_t.Name] or default_t.Name)
                 CreateTween("keybind", 0.08)
                 
                 local NewKeybindSize = TextService:GetTextSize(keybindButtonLabel.Text, keybindButtonLabel.TextSize, keybindButtonLabel.Font, Vector2.new(math.huge,math.huge))
@@ -1831,15 +1831,28 @@ function library:Init(key)
                 ResizeKeybind()
                 UpdatePageSize()
     
-                local ChosenKey = default_t.Name
+                local function GetInputName(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1
+                        or input.UserInputType == Enum.UserInputType.MouseButton2
+                        or input.UserInputType == Enum.UserInputType.MouseButton3 then
+                        return input.UserInputType.Name
+                    end
+                    if input.KeyCode and input.KeyCode ~= Enum.KeyCode.Unknown then
+                        return input.KeyCode.Name
+                    end
+                    return nil
+                end
+
+                local ChosenKey = default_t ~= Enum.KeyCode.Unknown and default_t.Name or nil
     
                 keybind.MouseButton1Click:Connect(function()
                     keybindButtonLabel.Text = ". . ."
                     local InputWait = UserInputService.InputBegan:wait()
-                    if UserInputService.WindowFocused and InputWait.KeyCode.Name ~= "Unknown" then
-                        local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
+                    local InputName = GetInputName(InputWait)
+                    if UserInputService.WindowFocused and InputName then
+                        local Result = Shortcuts[InputName] or InputName
                         keybindButtonLabel.Text = Result
-                        ChosenKey = InputWait.KeyCode.Name
+                        ChosenKey = InputName
                     end
                 end)
     
@@ -1850,7 +1863,8 @@ function library:Init(key)
                 if UserInputService.WindowFocused then
                     UserInputService.InputBegan:Connect(function(c, p)
                         if not p then
-                            if c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
+                            local InputName = GetInputName(c)
+                            if ChosenKey and InputName == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
                                 On = not On
                                 local SizeOn = On and UDim2.new(0, 12, 0, 12) or UDim2.new(0, 0, 0, 0)
                                 local Transparency = On and 0 or 1
@@ -1865,9 +1879,14 @@ function library:Init(key)
     
                 local ExtraKeybindFunctions = {}
                 function ExtraKeybindFunctions:SetKey(new)
-                    new = new or ChosenKey.Name
-                    ChosenKey = new.Name
-                    keybindButtonLabel.Text = new.Name
+                    if new == nil or new == Enum.KeyCode.Unknown then
+                        ChosenKey = nil
+                        keybindButtonLabel.Text = "None"
+                    else
+                        local NewKeyName = typeof(new) == "EnumItem" and new.Name or tostring(new)
+                        ChosenKey = NewKeyName
+                        keybindButtonLabel.Text = Shortcuts[NewKeyName] or NewKeyName
+                    end
                     return ExtraKeybindFunctions
                 end
                 --
@@ -2042,7 +2061,7 @@ function library:Init(key)
                 Return = "enter"
             }
 
-            keybindButtonLabel.Text = Shortcuts[default.Name] or default.Name
+            keybindButtonLabel.Text = default == Enum.KeyCode.Unknown and "None" or (Shortcuts[default.Name] or default.Name)
             CreateTween("keybind", 0.08)
             
             local NewKeybindSize = TextService:GetTextSize(keybindButtonLabel.Text, keybindButtonLabel.TextSize, keybindButtonLabel.Font, Vector2.new(math.huge,math.huge))
@@ -2059,24 +2078,38 @@ function library:Init(key)
             keybindButtonLabel:GetPropertyChangedSignal("Text"):Connect(ResizeKeybind)
             ResizeKeybind()
 
-            local ChosenKey = default
+            local function GetInputName(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1
+                    or input.UserInputType == Enum.UserInputType.MouseButton2
+                    or input.UserInputType == Enum.UserInputType.MouseButton3 then
+                    return input.UserInputType.Name
+                end
+                if input.KeyCode and input.KeyCode ~= Enum.KeyCode.Unknown then
+                    return input.KeyCode.Name
+                end
+                return nil
+            end
+
+            local ChosenKey = default ~= Enum.KeyCode.Unknown and default.Name or nil
             keybindButton.MouseButton1Click:Connect(function()
                 keybindButtonLabel.Text = "..."
                 local InputWait = UserInputService.InputBegan:wait()
-                if UserInputService.WindowFocused and InputWait.KeyCode.Name ~= "Unknown" then
-                    local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
+                local InputName = GetInputName(InputWait)
+                if UserInputService.WindowFocused and InputName then
+                    local Result = Shortcuts[InputName] or InputName
                     keybindButtonLabel.Text = Result
-                    ChosenKey = InputWait.KeyCode.Name
+                    ChosenKey = InputName
                 end
             end)
 
             keybind.MouseButton1Click:Connect(function()
                 keybindButtonLabel.Text = ". . ."
                 local InputWait = UserInputService.InputBegan:wait()
-                if UserInputService.WindowFocused and InputWait.KeyCode.Name ~= "Unknown" then
-                    local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
+                local InputName = GetInputName(InputWait)
+                if UserInputService.WindowFocused and InputName then
+                    local Result = Shortcuts[InputName] or InputName
                     keybindButtonLabel.Text = Result
-                    ChosenKey = InputWait.KeyCode.Name
+                    ChosenKey = InputName
                 end
             end)
 
@@ -2087,7 +2120,8 @@ function library:Init(key)
             if UserInputService.WindowFocused then
                 UserInputService.InputBegan:Connect(function(c, p)
                     if not p then
-                        if c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
+                        local InputName = GetInputName(c)
+                        if ChosenKey and InputName == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
                             callback(ChosenKey)
                             return
                         end
@@ -2110,9 +2144,14 @@ function library:Init(key)
             end
             --
             function KeybindFunctions:SetKey(new)
-                new = new or ChosenKey.Name
-                ChosenKey = new.Name
-                keybindButtonLabel.Text = new.Name
+                if new == nil or new == Enum.KeyCode.Unknown then
+                    ChosenKey = nil
+                    keybindButtonLabel.Text = "None"
+                else
+                    local NewKeyName = typeof(new) == "EnumItem" and new.Name or tostring(new)
+                    ChosenKey = NewKeyName
+                    keybindButtonLabel.Text = Shortcuts[NewKeyName] or NewKeyName
+                end
                 return KeybindFunctions
             end
             --
