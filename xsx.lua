@@ -1810,7 +1810,8 @@ function library:Init(key)
                 keybindStraint.MinSize = Vector2.new(30, 22)
     
                 local Shortcuts = {
-                    Return = "enter"
+                    Return = "enter",
+                    Unknown = "none"
                 }
     
                 keybindButtonLabel.Text = Shortcuts[default_t.Name] or default_t.Name
@@ -1835,8 +1836,11 @@ function library:Init(key)
     
                 keybind.MouseButton1Click:Connect(function()
                     keybindButtonLabel.Text = ". . ."
-                    local InputWait = UserInputService.InputBegan:wait()
-                    if UserInputService.WindowFocused and InputWait.KeyCode.Name ~= "Unknown" then
+                    local InputWait
+                    repeat
+                        InputWait = UserInputService.InputBegan:wait()
+                    until InputWait.KeyCode ~= Enum.KeyCode.Unknown
+                    if UserInputService.WindowFocused then
                         local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
                         keybindButtonLabel.Text = Result
                         ChosenKey = InputWait.KeyCode.Name
@@ -1850,7 +1854,7 @@ function library:Init(key)
                 if UserInputService.WindowFocused then
                     UserInputService.InputBegan:Connect(function(c, p)
                         if not p then
-                            if c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
+                            if ChosenKey ~= "Unknown" and c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
                                 On = not On
                                 local SizeOn = On and UDim2.new(0, 12, 0, 12) or UDim2.new(0, 0, 0, 0)
                                 local Transparency = On and 0 or 1
@@ -2039,7 +2043,8 @@ function library:Init(key)
             keybindStraint.MinSize = Vector2.new(30, 22)
 
             local Shortcuts = {
-                Return = "enter"
+                Return = "enter",
+                Unknown = "none"
             }
 
             keybindButtonLabel.Text = Shortcuts[default.Name] or default.Name
@@ -2059,11 +2064,14 @@ function library:Init(key)
             keybindButtonLabel:GetPropertyChangedSignal("Text"):Connect(ResizeKeybind)
             ResizeKeybind()
 
-            local ChosenKey = default
+            local ChosenKey = default.Name
             keybindButton.MouseButton1Click:Connect(function()
                 keybindButtonLabel.Text = "..."
-                local InputWait = UserInputService.InputBegan:wait()
-                if UserInputService.WindowFocused and InputWait.KeyCode.Name ~= "Unknown" then
+                local InputWait
+                repeat
+                    InputWait = UserInputService.InputBegan:wait()
+                until InputWait.KeyCode ~= Enum.KeyCode.Unknown
+                if UserInputService.WindowFocused then
                     local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
                     keybindButtonLabel.Text = Result
                     ChosenKey = InputWait.KeyCode.Name
@@ -2072,8 +2080,11 @@ function library:Init(key)
 
             keybind.MouseButton1Click:Connect(function()
                 keybindButtonLabel.Text = ". . ."
-                local InputWait = UserInputService.InputBegan:wait()
-                if UserInputService.WindowFocused and InputWait.KeyCode.Name ~= "Unknown" then
+                local InputWait
+                repeat
+                    InputWait = UserInputService.InputBegan:wait()
+                until InputWait.KeyCode ~= Enum.KeyCode.Unknown
+                if UserInputService.WindowFocused then
                     local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
                     keybindButtonLabel.Text = Result
                     ChosenKey = InputWait.KeyCode.Name
@@ -2087,7 +2098,7 @@ function library:Init(key)
             if UserInputService.WindowFocused then
                 UserInputService.InputBegan:Connect(function(c, p)
                     if not p then
-                        if c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
+                        if ChosenKey ~= "Unknown" and c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
                             callback(ChosenKey)
                             return
                         end
