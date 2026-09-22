@@ -1839,7 +1839,7 @@ function library:Init(key)
                     local InputWait
                     repeat
                         InputWait = UserInputService.InputBegan:wait()
-                    until InputWait.KeyCode ~= Enum.KeyCode.Unknown
+                    until InputWait.KeyCode ~= Enum.KeyCode.Unknown and InputWait.UserInputType == Enum.UserInputType.Keyboard
                     if UserInputService.WindowFocused then
                         local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
                         keybindButtonLabel.Text = Result
@@ -1854,7 +1854,11 @@ function library:Init(key)
                 if UserInputService.WindowFocused then
                     UserInputService.InputBegan:Connect(function(c, p)
                         if not p then
-                            if ChosenKey ~= "Unknown" and c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
+                            if ChosenKey ~= "Unknown"
+                                and c.UserInputType == Enum.UserInputType.Keyboard
+                                and c.KeyCode.Name == ChosenKey
+                                and (not ChatTextBox or not ChatTextBox:IsFocused())
+                            then
                                 On = not On
                                 local SizeOn = On and UDim2.new(0, 12, 0, 12) or UDim2.new(0, 0, 0, 0)
                                 local Transparency = On and 0 or 1
@@ -2070,7 +2074,7 @@ function library:Init(key)
                 local InputWait
                 repeat
                     InputWait = UserInputService.InputBegan:wait()
-                until InputWait.KeyCode ~= Enum.KeyCode.Unknown
+                until InputWait.KeyCode ~= Enum.KeyCode.Unknown and InputWait.UserInputType == Enum.UserInputType.Keyboard
                 if UserInputService.WindowFocused then
                     local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
                     keybindButtonLabel.Text = Result
@@ -2083,7 +2087,7 @@ function library:Init(key)
                 local InputWait
                 repeat
                     InputWait = UserInputService.InputBegan:wait()
-                until InputWait.KeyCode ~= Enum.KeyCode.Unknown
+                until InputWait.KeyCode ~= Enum.KeyCode.Unknown and InputWait.UserInputType == Enum.UserInputType.Keyboard
                 if UserInputService.WindowFocused then
                     local Result = Shortcuts[InputWait.KeyCode.Name] or InputWait.KeyCode.Name
                     keybindButtonLabel.Text = Result
@@ -2098,7 +2102,11 @@ function library:Init(key)
             if UserInputService.WindowFocused then
                 UserInputService.InputBegan:Connect(function(c, p)
                     if not p then
-                        if ChosenKey ~= "Unknown" and c.KeyCode.Name == ChosenKey and (not ChatTextBox or not ChatTextBox:IsFocused()) then
+                        if ChosenKey ~= "Unknown"
+                            and c.UserInputType == Enum.UserInputType.Keyboard
+                            and c.KeyCode.Name == ChosenKey
+                            and (not ChatTextBox or not ChatTextBox:IsFocused())
+                        then
                             callback(ChosenKey)
                             return
                         end
